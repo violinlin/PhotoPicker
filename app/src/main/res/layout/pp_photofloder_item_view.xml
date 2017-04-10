@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/imageview"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_folder_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="所有文件"
+            android:textColor="#323232"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_folder_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="3张"
+            android:textColor="#969696"></TextView>
+    </LinearLayout>
+
+    <RadioButton
+        android:id="@+id/radiobutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</merge>
