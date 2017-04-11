@@ -6,7 +6,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/pp_place_holder" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -19,7 +19,8 @@
             android:id="@+id/tv_folder_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="所有文件"
+            android:text=""
+            android:lines="1"
             android:textColor="#323232"
             android:textSize="18sp" />
 
@@ -28,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="3张"
+            android:text=""
             android:textColor="#969696"></TextView>
     </LinearLayout>
 

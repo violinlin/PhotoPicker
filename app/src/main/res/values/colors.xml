@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#21282C</color><!--ActionBar颜色-->
-    <color name="colorPrimaryDark">#21282C</color><!--状态栏颜色-->
+
     <color name="cl_21282C">#21282C</color>
+    <color name="cl_1B2137">#1B2137</color>
 </resources>

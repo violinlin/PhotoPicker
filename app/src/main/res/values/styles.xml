@@ -3,8 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/cl_21282C</item>
-        <item name="colorPrimaryDark">@color/cl_21282C</item>
+        <item name="colorPrimary">@color/cl_21282C</item><!--ActionBar颜色-->
+        <item name="colorPrimaryDark">@color/cl_1B2137</item><!--状态栏颜色-->
     </style>
 
 </resources>

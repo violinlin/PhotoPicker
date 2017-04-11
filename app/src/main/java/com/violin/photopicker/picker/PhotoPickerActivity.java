@@ -62,7 +62,6 @@ public class PhotoPickerActivity extends Activity {
     private File tempFile;//图片存储路径
     private PickMode pickMode;
     private String TEMP = "temp";
-    private final String UMENG_TAG=PhotoPickerActivity.class.getSimpleName();
 
     /**
      * 启动器分为fragment或activity
@@ -447,15 +446,6 @@ public class PhotoPickerActivity extends Activity {
         PhotoPickerActivity.this.finish();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
 
 
