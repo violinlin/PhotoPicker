@@ -24,10 +24,9 @@ import java.util.Map;
  */
 
 public class PhotoUtil {
-    public static String TAG_SCALE="scale";//图片缩放前缀
-    public static String TAG_COMPRESS="compress";//图片压缩前缀
-    public static String TAG_ORIGIN="gl";//拍照原图前缀
-
+    public static String TAG_SCALE = "scale";//图片缩放前缀
+    public static String TAG_COMPRESS = "compress";//图片压缩前缀
+    public static String TAG_ORIGIN = "gl";//拍照原图前缀
 
 
     //    获取图片的缓存目录
@@ -50,20 +49,6 @@ public class PhotoUtil {
 
     }
 
-    // 获取ar图片的缓存目录
-    public static File getARTempFile(Context context, String pres) {
-        File file;
-        String timeStamp = String.valueOf(new Date().getTime());
-
-        File pFile = context.getExternalFilesDir("Resources/big");
-        if (!pFile.exists()) {
-            pFile.mkdirs();
-        }
-        file = new File(pFile, pres + timeStamp);
-        return file;
-
-
-    }
 
     //查询手机中的图片
     public Map<String, PhotoFolderBean> getPhotos(Context context) {
@@ -76,15 +61,22 @@ public class PhotoUtil {
         allFolder.setPhotoList(new ArrayList<PhotoBean>());
         folderMap.put(allPhotosKey, allFolder);
 
-        Uri imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Uri imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;//获取图片的URI:SD卡上的图片内容
         ContentResolver mContentResolver = context.getContentResolver();
 
         // 只查询jpeg和png的图片
+        /**
+         * @param1 查询内容的URI, 这里是获取外部存储的所有图片内容
+         * @param2 查询返回的列, null表示返回所有的列
+         * @param3 查询返回行的筛选条件
+         * @param4 替换参数三中的?占位符
+         * @param5 返回行的排序方式 desc倒叙排列
+         */
         Cursor mCursor = mContentResolver.query(imageUri, null,
                 MediaStore.Images.Media.MIME_TYPE + " in(?, ?)",
                 new String[]{"image/jpeg", "image/png"},
                 MediaStore.Images.Media.DATE_MODIFIED + " desc");
-
+//      获取图片路径字段所在的列
         int pathIndex = mCursor
                 .getColumnIndex(MediaStore.Images.Media.DATA);
 
@@ -105,7 +97,6 @@ public class PhotoUtil {
                     PhotoFolderBean photoFolder = folderMap.get(dirPath);
                     photoFolder.getPhotoList().add(photo);
                     folderMap.get(allPhotosKey).getPhotoList().add(photo);
-                    continue;
                 } else {
                     PhotoFolderBean photoFolder = new PhotoFolderBean();
                     List<PhotoBean> photoList = new ArrayList<>();

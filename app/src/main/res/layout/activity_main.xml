@@ -8,8 +8,27 @@
     tools:context="com.violin.photopicker.MainActivity">
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/start"
-        android:text="start!" />
+        android:id="@+id/single_mode"
+        android:layout_margin="5dp"
+        android:text="单选" />
+    <Button
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="多选"
+        android:id="@+id/multiple_mode"
+        />
+    <Button
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="多选(无拍照键)"
+        android:id="@+id/multiple_no_camera"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

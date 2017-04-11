@@ -64,6 +64,7 @@ public class PhotoPickerActivity extends Activity {
     private String TEMP = "temp";
 
     /**
+     *
      * 启动器分为fragment或activity
      *
      * @param activity
@@ -93,7 +94,7 @@ public class PhotoPickerActivity extends Activity {
         }
         pickMode = getIntent().getParcelableExtra(PickMode.PICK_MODE);
         if (pickMode == null) {
-            pickMode = new PickMode(PickMode.MULTY_MODE, 9,PickMode.MODE_HAS_CAMERA);
+            pickMode = new PickMode(PickMode.MULTY_MODE, 9, PickMode.MODE_HAS_CAMERA);
         }
         initView();
         initData();
@@ -113,7 +114,7 @@ public class PhotoPickerActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (seletedPhotos.size() > 0) {
-                   setResultData();
+                    setResultData();
                 } else {
                     Toast.makeText(getBaseContext(), "请先选择相片", Toast.LENGTH_SHORT).show();
                 }
@@ -133,7 +134,7 @@ public class PhotoPickerActivity extends Activity {
             }
         });
         photoAdapter = new PhotoAdapter(this);
-        photoAdapter.setHasCamera(pickMode.getHasCamera()==PickMode.MODE_HAS_CAMERA?true:false);
+        photoAdapter.setHasCamera(pickMode.getHasCamera() == PickMode.MODE_HAS_CAMERA ? true : false);
         photoAdapter.setMode(pickMode.getMode());
         photoAdapter.setListener(new PhotoItemView.Listener() {
             @Override
@@ -159,7 +160,6 @@ public class PhotoPickerActivity extends Activity {
         });
 
         pRecyclerView.setAdapter(photoAdapter);
-        loadPhotoData();
 
         bottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
         headerLayout = (RelativeLayout) findViewById(R.id.header_layout);
@@ -174,6 +174,9 @@ public class PhotoPickerActivity extends Activity {
 
             }
         });
+
+        loadPhotoData();
+
     }
 
     //    初始化相册文件列表
@@ -428,7 +431,7 @@ public class PhotoPickerActivity extends Activity {
             case CROP_PHOTO:
                 if (pickMode.getMode() == PickMode.SINGLE_MODE) {
                     seletedPhotos.add(tempFile.getAbsolutePath());
-                   setResultData();
+                    setResultData();
                 }
                 break;
 
@@ -445,8 +448,6 @@ public class PhotoPickerActivity extends Activity {
         setResult(PickMode.RESULT_CODE, intent);
         PhotoPickerActivity.this.finish();
     }
-
-
 
 
 }
