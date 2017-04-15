@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.violin.photopicker.picker.PhotoPickerActivity;
 import com.violin.photopicker.picker.bean.PhotoBean;
@@ -63,7 +64,7 @@ public class PhotoUtil {
 
         Uri imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;//获取图片的URI:SD卡上的图片内容
         ContentResolver mContentResolver = context.getContentResolver();
-
+        Log.d("whl",imageUri.toString());
         // 只查询jpeg和png的图片
         /**
          * @param1 查询内容的URI, 这里是获取外部存储的所有图片内容

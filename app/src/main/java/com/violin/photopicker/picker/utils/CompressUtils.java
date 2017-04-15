@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.violin.photopicker.picker.bean.CompressBean;
 
@@ -34,9 +35,10 @@ public class CompressUtils {
 
     private Context mContext;
 
-    public CompressUtils(Context context){
-        this.mContext=context;
+    public CompressUtils(Context context) {
+        this.mContext = context;
     }
+
     public CompressUtils getCompressBeans(final List<String> paths) {
         final List<CompressBean> beanList = new LinkedList<>();
         Observable.from(paths)
@@ -52,7 +54,7 @@ public class CompressUtils {
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
-                        mListener.onCompressComplete(beanList, (float)(beanList.size()) / paths.size());
+                        mListener.onCompressComplete(beanList, (float) (beanList.size()) / paths.size());
 
                     }
 
@@ -65,7 +67,7 @@ public class CompressUtils {
                     public void onNext(String s) {
                         if (s != null) {
                             int[] imageSize = getImageSize(s);
-                            mListener.onCompressComplete(beanList, (float)(beanList.size()) / paths.size());
+                            mListener.onCompressComplete(beanList, (float) (beanList.size()) / paths.size());
                             CompressBean bean = new CompressBean(imageSize[0], imageSize[1], s);
                             beanList.add(bean);
 
@@ -79,7 +81,6 @@ public class CompressUtils {
     }
 
 
-
     public interface Listener {
         void onCompressComplete(List<CompressBean> been, float parent);
     }
@@ -91,7 +92,7 @@ public class CompressUtils {
 
     }
 
-    private double maxSize = 380;//默认图片最大值为kb;
+//    private double maxSize = 380;//默认图片最大值为kb;
 
     /**
      * @param file    图片源文件,
@@ -115,7 +116,12 @@ public class CompressUtils {
 
         width = thumbW > thumbH ? thumbH : thumbW;
         height = thumbW > thumbH ? thumbW : thumbH;
-
+/**
+ *  判断图片比例值，是否处于以下区间内；
+ *  [1, 0.5625) 即图片处于 [1:1 ~ 9:16) 比例范围内
+ *   [0.5625, 0.5) 即图片处于 [9:16 ~ 1:2) 比例范围内
+ *  [0.5, 0) 即图片处于 [1:2 ~ 1:∞) 比例范围内
+ */
         double scale = ((double) width / height);
         if (scale <= 1 && scale > 0.5625) {
             if (height < 1664) {
@@ -156,7 +162,7 @@ public class CompressUtils {
             size = size < 100 ? 100 : size;
         }
 
-        return compress(filePath, thumb, thumbW, thumbH, angle, (long) 300).getAbsolutePath();
+        return compress(filePath, thumb, thumbW, thumbH, angle, (long) size).getAbsolutePath();
     }
 
 
@@ -303,10 +309,11 @@ public class CompressUtils {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         int options = 100;
         bitmap.compress(Bitmap.CompressFormat.JPEG, options, stream);
-
-        while (stream.toByteArray().length / 1024 > maxSize && options > 6) {
+        Log.d("whl", size + "size");
+        while (stream.toByteArray().length / 1024 > size && options > 50) {
             stream.reset();
-            options -= 6;
+            options -= 10;
+            Log.d("whl", options + "options");
             bitmap.compress(Bitmap.CompressFormat.JPEG, options, stream);
         }
         bitmap.recycle();

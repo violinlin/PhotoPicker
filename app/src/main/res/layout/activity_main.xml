@@ -27,6 +27,13 @@
         android:text="多选(无拍照键)"
         android:id="@+id/multiple_no_camera"
         />
+    <Button
+        android:layout_margin="5dp"
+        android:text="压缩"
+        android:id="@+id/compress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

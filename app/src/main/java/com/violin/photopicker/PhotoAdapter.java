@@ -2,6 +2,7 @@ package com.violin.photopicker;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -37,7 +38,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     public void deleteData(int position) {
         if (mPhotos != null) {
             mPhotos.remove(position);
-            notifyDataSetChanged();
+            Log.d("whl","position"+position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mPhotos.size() - position);
+            Log.d("whl","size"+mPhotos.size());
         }
 
 
@@ -71,7 +75,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     @Override
     public int getItemCount() {
-        return mPhotos==null?0:mPhotos.size();
+        return mPhotos == null ? 0 : mPhotos.size();
     }
 
     class PhotoViewHolder extends RecyclerView.ViewHolder {
