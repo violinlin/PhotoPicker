@@ -1,7 +1,16 @@
 package com.violin.photopicker;
 
+import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentProvider;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -86,11 +95,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.permission).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCamera(v);
+            }
+        });
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(manager);
         photoAdapter = new PhotoAdapter(this);
         recyclerView.setAdapter(photoAdapter);
+    }
+
+    private void showCamera(View view) {
+
+        if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.i("whl", "请求获取权限");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.CAMERA)) {
+
+                Snackbar.make(view,"请求获取打开相册权限",Snackbar.LENGTH_SHORT)
+                        .setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[]{Manifest.permission.CAMERA}, 100);
+                            }
+                        }).show();
+
+
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.CAMERA}, 100);
+
+            }
+
+
+        } else {
+            Log.i("whl", "获取了相机权限");
+
+            Intent intent = new Intent(Intent.ACTION_PICK, null);
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, 1001);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i("whl",permissions[0]+"----"+grantResults[0]);
+        if (requestCode==100){
+            if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 1001);
+            }else {
+                Snackbar.make(getWindow().getDecorView(),"获取权限被拒绝",Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+
+        }
+
     }
 
     @Override

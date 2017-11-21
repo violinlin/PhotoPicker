@@ -1,6 +1,7 @@
 package com.violin.photopicker.picker;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,7 +66,6 @@ public class PhotoPickerActivity extends Activity {
     private String TEMP = "temp";
 
     /**
-     *
      * 启动器分为fragment或activity
      *
      * @param activity
@@ -189,6 +190,7 @@ public class PhotoPickerActivity extends Activity {
         popupWindow.setFocusable(true);
         popupWindow.setClippingEnabled(false);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setAnimationStyle(R.style.PopAnimStyle);
         View view = LayoutInflater.from(this).inflate(R.layout.pp_photofloder_layout, null);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.getHeight();
@@ -217,6 +219,8 @@ public class PhotoPickerActivity extends Activity {
         }
 
     }
+
+
 
 
     //拍照处理
