@@ -89,9 +89,11 @@ public class PhotoUtil {
                 // 获取该图片的父路径名
                 File parentFile = new File(path).getParentFile();
                 if (parentFile == null) {
+                    Log.d("whl","cccccccccccccc"+path);
                     continue;
                 }
                 String dirPath = parentFile.getAbsolutePath();
+                Log.d("whl","-----"+dirPath);
 
                 if (folderMap.containsKey(dirPath)) {
                     PhotoBean photo = new PhotoBean(path);

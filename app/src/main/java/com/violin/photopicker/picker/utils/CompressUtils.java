@@ -123,6 +123,8 @@ public class CompressUtils {
  *  [0.5, 0) 即图片处于 [1:2 ~ 1:∞) 比例范围内
  */
         double scale = ((double) width / height);
+
+        Log.d("whl","width"+width+"  height"+height+"   scale"+scale);
         if (scale <= 1 && scale > 0.5625) {
             if (height < 1664) {
                 if (file.length() / 1024 < 150) return file.getAbsolutePath();
@@ -161,7 +163,7 @@ public class CompressUtils {
             size = ((thumbW * thumbH) / (1280.0 * (1280 / scale))) * 500;
             size = size < 100 ? 100 : size;
         }
-
+Log.d("whl","-------size"+size+"thumbw"+thumbW+"   thH"+thumbH);
         return compress(filePath, thumb, thumbW, thumbH, angle, (long) size).getAbsolutePath();
     }
 

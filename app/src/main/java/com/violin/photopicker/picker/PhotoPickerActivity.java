@@ -221,8 +221,6 @@ public class PhotoPickerActivity extends Activity {
     }
 
 
-
-
     //拍照处理
     private void takePhoto() {
         try {
