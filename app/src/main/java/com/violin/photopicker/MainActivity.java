@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     startTime = System.currentTimeMillis();
 
 
-                    new CompressUtil(new File(mPhotos.get(0)), PhotoUtil.getTempFile(v.getContext(), PhotoUtil.TAG_COMPRESS))
+                    new CompressUtil(v.getContext(),new File(mPhotos.get(0)))
                             .setListener(new CompressUtil.Listener() {
                                 @Override
                                 public void onCompressComplete(CompressBean been) {
@@ -91,18 +91,6 @@ public class MainActivity extends AppCompatActivity {
                                     dialog.cancel();
                                 }
                             }).compress();
-//                    new CompressUtils(MainActivity.this).getCompressBeans(mPhotos).setListener(new CompressUtils.Listener() {
-//                        @Override
-//                        public void onCompressComplete(List<CompressBean> been, float parent) {
-//                            dialog.setProgress((int) parent * 100);
-//                            Log.d("whl", "parent" + parent);
-//                            if (parent == 1) {
-//                                Log.d("whl", "time" + (System.currentTimeMillis() - startTime));
-//                                dialog.cancel();
-//                            }
-//
-//                        }
-//                    });
                 } else {
                     Toast.makeText(v.getContext(), "请先选择图片", Toast.LENGTH_SHORT).show();
                 }

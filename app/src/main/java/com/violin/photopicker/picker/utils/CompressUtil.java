@@ -1,9 +1,11 @@
 package com.violin.photopicker.picker.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.os.Environment;
 import android.util.Log;
 
 import com.violin.photopicker.picker.bean.CompressBean;
@@ -12,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 
 /**
@@ -25,22 +28,27 @@ public class CompressUtil {
     private File mDesFile;
     private File mSrcFile;
 
+    private long MAX_SIZE = 1 * 1024 * 1024;
+
+
     /**
      * 源文件
      *
      * @param srcFile 源文件
-     * @param desFile 输出文件
+     * @param context 上下文
      */
-    public CompressUtil(File srcFile, File desFile) {
+    public CompressUtil(Context context, File srcFile) {
 
         this.mSrcFile = srcFile;
-        this.mDesFile = desFile;
+        String name = srcFile.getName();
+        this.mDesFile = getTempFile(context, name);
 
 
     }
 
     public void compress() {
-        Log.d("whl", "compress--start");
+        CompressBean compressBean = null;
+
         String srcPath = mSrcFile.getAbsolutePath();
 
 //        加载图片，获取图片的宽高
@@ -48,25 +56,41 @@ public class CompressUtil {
         whOptions.inJustDecodeBounds = true;
         whOptions.inSampleSize = 1;
         BitmapFactory.decodeFile(srcPath, whOptions);
-
+        Log.d("whl", "compress--src--w:" + whOptions.outWidth + "h:" + whOptions.outHeight);
 //          根据图片尺寸计算图片的压缩率
         BitmapFactory.Options reSizeOptions = new BitmapFactory.Options();
+
         reSizeOptions.inSampleSize = computeSize(whOptions.outWidth, whOptions.outHeight);
 
-        Bitmap bitmap = BitmapFactory.decodeFile(srcPath, reSizeOptions);
+        Log.d("whl", "resize" + reSizeOptions.inSampleSize);
 
-        try {
-            bitmap = rotatingImage(bitmap);
+//        如果原图片不用缩放尺寸 且不超过最大限制，直接返回原图
+        if (reSizeOptions.inSampleSize == 1 && mSrcFile.length() <= MAX_SIZE) {
+            compressBean = new CompressBean();
+            compressBean.setPath(mSrcFile.getAbsolutePath());
+            compressBean.setSize(mSrcFile.length());
+            compressBean.setWidhth(whOptions.outWidth);
+            compressBean.setHeight(whOptions.outHeight);
 
-            CompressBean bean = compressByQuality(bitmap);
-            if (mListener != null) {
-                mListener.onCompressComplete(bean);
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeFile(srcPath, reSizeOptions);
+
+            try {
+                bitmap = rotatingImage(bitmap);
+
+                compressBean = compressByQuality(bitmap);
+
+            } catch (IOException e) {
+                if (mListener != null) {
+                    mListener.onCompressComplete(null);
+                }
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            if (mListener != null) {
-                mListener.onCompressComplete(null);
-            }
-            e.printStackTrace();
+
+        }
+
+        if (mListener != null) {
+            mListener.onCompressComplete(compressBean);
         }
 
 
@@ -91,7 +115,7 @@ public class CompressUtil {
 
         bean.setWidhth(bitmap.getWidth());
         bean.setHeight(bitmap.getHeight());
-        bean.setSize(bitmap.getByteCount());
+
         bean.setPath(mDesFile.getAbsolutePath());
         bitmap.recycle();
         try {
@@ -100,6 +124,7 @@ public class CompressUtil {
             fos.flush();
             fos.close();
             stream.close();
+            bean.setSize(mDesFile.length());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -113,7 +138,6 @@ public class CompressUtil {
      * @return
      */
     private int computeSize(int srcWidth, int srcHeight) {
-        Log.d("whl", "computeSize--");
         srcWidth = srcWidth % 2 == 1 ? srcWidth + 1 : srcWidth;
         srcHeight = srcHeight % 2 == 1 ? srcHeight + 1 : srcHeight;
 
@@ -145,12 +169,13 @@ public class CompressUtil {
      */
     private Bitmap rotatingImage(Bitmap bitmap) throws IOException {
 
-        Log.d("whl", "rotatingImage--");
+
         ExifInterface srcExif = new ExifInterface(mSrcFile.getAbsolutePath());
 
         Matrix matrix = new Matrix();
         int angle = 0;
         int orientation = srcExif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        Log.d("whl", "rotatingImage--" + orientation);
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
                 angle = 90;
@@ -177,6 +202,27 @@ public class CompressUtil {
     public CompressUtil setListener(Listener listener) {
         this.mListener = listener;
         return this;
+    }
+
+    public static final String prefix = "compress_";// 压缩文件前缀
+
+    //    获取图片的缓存目录
+    public static File getTempFile(Context context, String name) {
+        File file;
+        String desName = prefix + name;
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File pFile = new File(Environment.getExternalStorageDirectory() + File.separator + "photopicker");
+            if (!pFile.exists()) {
+                pFile.mkdirs();
+            }
+            file = new File(pFile, desName);
+        } else {
+            File cacheDir = context.getCacheDir();
+            file = new File(cacheDir, desName);
+        }
+
+        return file;
+
     }
 
 }

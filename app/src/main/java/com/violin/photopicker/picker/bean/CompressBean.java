@@ -10,13 +10,13 @@ public class CompressBean {
     private int height;//图片高度
     private String path;//图片路径
     private String key;
-    private double size;
+    private long size;
 
-    public double getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(double size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
@@ -28,13 +28,13 @@ public class CompressBean {
         this.key = key;
     }
 
-    public CompressBean(int widhth, int height, String path){
-        this.widhth=widhth;
-        this.height=height;
-        this.path=path;
+    public CompressBean(int widhth, int height, String path) {
+        this.widhth = widhth;
+        this.height = height;
+        this.path = path;
     }
 
-    public CompressBean(){
+    public CompressBean() {
 
     }
 
@@ -68,6 +68,8 @@ public class CompressBean {
                 "widhth=" + widhth +
                 ", height=" + height +
                 ", path='" + path + '\'' +
+                ", key='" + key + '\'' +
+                ", size=" + size +
                 '}';
     }
 }
