@@ -24,12 +24,15 @@ import android.widget.Toast;
 
 import com.violin.photopicker.picker.PhotoPickerActivity;
 import com.violin.photopicker.picker.bean.CompressBean;
-import com.violin.photopicker.picker.utils.CompressUtils;
-import com.violin.photopicker.picker.utils.ImageUtil;
+import com.violin.photopicker.picker.utils.CompressUtil;
+import com.violin.photopicker.picker.utils.PhotoUtil;
 import com.violin.photopicker.picker.utils.PickMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,18 +80,29 @@ public class MainActivity extends AppCompatActivity {
                 if (mPhotos != null && mPhotos.size() > 0) {
                     dialog.show();
                     startTime = System.currentTimeMillis();
-                    new CompressUtils(MainActivity.this).getCompressBeans(mPhotos).setListener(new CompressUtils.Listener() {
-                        @Override
-                        public void onCompressComplete(List<CompressBean> been, float parent) {
-                            dialog.setProgress((int) parent * 100);
-                            Log.d("whl", "parent" + parent);
-                            if (parent == 1) {
-                                Log.d("whl", "time" + (System.currentTimeMillis() - startTime));
-                                dialog.cancel();
-                            }
 
-                        }
-                    });
+
+                    new CompressUtil(new File(mPhotos.get(0)), PhotoUtil.getTempFile(v.getContext(), PhotoUtil.TAG_COMPRESS))
+                            .setListener(new CompressUtil.Listener() {
+                                @Override
+                                public void onCompressComplete(CompressBean been) {
+                                    Log.d("whl", been.toString());
+                                    Log.d("whl", "time" + (System.currentTimeMillis() - startTime));
+                                    dialog.cancel();
+                                }
+                            }).compress();
+//                    new CompressUtils(MainActivity.this).getCompressBeans(mPhotos).setListener(new CompressUtils.Listener() {
+//                        @Override
+//                        public void onCompressComplete(List<CompressBean> been, float parent) {
+//                            dialog.setProgress((int) parent * 100);
+//                            Log.d("whl", "parent" + parent);
+//                            if (parent == 1) {
+//                                Log.d("whl", "time" + (System.currentTimeMillis() - startTime));
+//                                dialog.cancel();
+//                            }
+//
+//                        }
+//                    });
                 } else {
                     Toast.makeText(v.getContext(), "请先选择图片", Toast.LENGTH_SHORT).show();
                 }
@@ -116,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("whl", "请求获取权限");
             if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.CAMERA)) {
 
-                Snackbar.make(view,"请求获取打开相册权限",Snackbar.LENGTH_SHORT)
+                Snackbar.make(view, "请求获取打开相册权限", Snackbar.LENGTH_SHORT)
                         .setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -147,15 +161,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i("whl",permissions[0]+"----"+grantResults[0]);
-        if (requestCode==100){
-            if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+        Log.i("whl", permissions[0] + "----" + grantResults[0]);
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent(Intent.ACTION_PICK, null);
                 intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, 1001);
-            }else {
-                Snackbar.make(getWindow().getDecorView(),"获取权限被拒绝",Snackbar.LENGTH_SHORT)
+            } else {
+                Snackbar.make(getWindow().getDecorView(), "获取权限被拒绝", Snackbar.LENGTH_SHORT)
                         .show();
             }
 
