@@ -14,7 +14,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 
 
 /**
@@ -34,8 +33,8 @@ public class CompressUtil {
     /**
      * 源文件
      *
-     * @param srcFile 源文件
      * @param context 上下文
+     * @param srcFile 源文件
      */
     public CompressUtil(Context context, File srcFile) {
 
@@ -46,7 +45,7 @@ public class CompressUtil {
 
     }
 
-    public void compress() {
+    public CompressBean compress() {
         CompressBean compressBean = null;
 
         String srcPath = mSrcFile.getAbsolutePath();
@@ -74,24 +73,19 @@ public class CompressUtil {
 
         } else {
             Bitmap bitmap = BitmapFactory.decodeFile(srcPath, reSizeOptions);
-
             try {
                 bitmap = rotatingImage(bitmap);
 
                 compressBean = compressByQuality(bitmap);
 
             } catch (IOException e) {
-                if (mListener != null) {
-                    mListener.onCompressComplete(null);
-                }
+
                 e.printStackTrace();
             }
 
         }
 
-        if (mListener != null) {
-            mListener.onCompressComplete(compressBean);
-        }
+        return compressBean;
 
 
     }
@@ -104,14 +98,14 @@ public class CompressUtil {
         Log.d("whl", "compressByQuality-----");
         CompressBean bean = new CompressBean();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        int options = 60;
+        int options = 100;
         bitmap.compress(Bitmap.CompressFormat.JPEG, options, stream);
-//        while (stream.toByteArray().length / 1024 > 2 * 1024 * 1024 && options > 50) {
-//            stream.reset();
-//            options -= 10;
-//            Log.d("whl", options + "options");
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, options, stream);
-//        }
+        while (stream.toByteArray().length > MAX_SIZE && options > 50) {
+            stream.reset();
+            options -= 10;
+            Log.d("whl", options + "options");
+            bitmap.compress(Bitmap.CompressFormat.JPEG, options, stream);
+        }
 
         bean.setWidhth(bitmap.getWidth());
         bean.setHeight(bitmap.getHeight());
@@ -193,16 +187,6 @@ public class CompressUtil {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    public interface Listener {
-        void onCompressComplete(CompressBean been);
-    }
-
-    private Listener mListener;
-
-    public CompressUtil setListener(Listener listener) {
-        this.mListener = listener;
-        return this;
-    }
 
     public static final String prefix = "compress_";// 压缩文件前缀
 

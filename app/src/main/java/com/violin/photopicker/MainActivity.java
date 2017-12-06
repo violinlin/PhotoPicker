@@ -34,6 +34,12 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import rx.Scheduler;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> mPhotos;
@@ -80,17 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mPhotos != null && mPhotos.size() > 0) {
                     dialog.show();
                     startTime = System.currentTimeMillis();
-
-
-                    new CompressUtil(v.getContext(),new File(mPhotos.get(0)))
-                            .setListener(new CompressUtil.Listener() {
-                                @Override
-                                public void onCompressComplete(CompressBean been) {
-                                    Log.d("whl", been.toString());
-                                    Log.d("whl", "time" + (System.currentTimeMillis() - startTime));
-                                    dialog.cancel();
-                                }
-                            }).compress();
+                    compressPhotos(v, dialog);
                 } else {
                     Toast.makeText(v.getContext(), "请先选择图片", Toast.LENGTH_SHORT).show();
                 }
@@ -109,6 +105,45 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
         photoAdapter = new PhotoAdapter(this);
         recyclerView.setAdapter(photoAdapter);
+    }
+
+    /**
+     * 压缩图片
+     *
+     * @param v
+     * @param dialog
+     */
+    private void compressPhotos(final View v, final ProgressDialog dialog) {
+        rx.Observable.just(mPhotos.get(0)).map(new Func1<String, File>() {
+            @Override
+            public File call(String s) {
+                return new File(s);
+            }
+        }).map(new Func1<File, CompressBean>() {
+            @Override
+            public CompressBean call(File file) {
+                return new CompressUtil(v.getContext(), file).compress();
+            }
+        }).observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CompressBean>() {
+                    @Override
+                    public void onCompleted() {
+                        dialog.cancel();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dialog.cancel();
+                    }
+
+                    @Override
+                    public void onNext(CompressBean compressBean) {
+                        Log.d("whl", compressBean.toString());
+                        Log.d("whl", "time" + (System.currentTimeMillis() - startTime));
+                    }
+                });
+        
     }
 
     private void showCamera(View view) {
