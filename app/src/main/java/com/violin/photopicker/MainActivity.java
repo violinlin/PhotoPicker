@@ -114,17 +114,20 @@ public class MainActivity extends AppCompatActivity {
      * @param dialog
      */
     private void compressPhotos(final View v, final ProgressDialog dialog) {
-        rx.Observable.just(mPhotos.get(0)).map(new Func1<String, File>() {
-            @Override
-            public File call(String s) {
-                return new File(s);
-            }
-        }).map(new Func1<File, CompressBean>() {
-            @Override
-            public CompressBean call(File file) {
-                return new CompressUtil(v.getContext(), file).compress();
-            }
-        }).observeOn(Schedulers.io())
+        rx.Observable
+                .just(mPhotos.get(0))
+                .map(new Func1<String, File>() {
+                    @Override
+                    public File call(String s) {
+                        return new File(s);
+                    }
+                })
+                .map(new Func1<File, CompressBean>() {
+                    @Override
+                    public CompressBean call(File file) {
+                        return new CompressUtil(v.getContext(), file).compress();
+                    }
+                }).observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CompressBean>() {
                     @Override
@@ -143,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("whl", "time" + (System.currentTimeMillis() - startTime));
                     }
                 });
-        
+
     }
 
     private void showCamera(View view) {
