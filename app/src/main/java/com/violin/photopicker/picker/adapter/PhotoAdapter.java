@@ -81,7 +81,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         PhotoItemView itemView = new PhotoItemView(mContext);
         itemView.setListener(listener);
-        itemView.setLayoutParams(new FrameLayout.LayoutParams(parent.getResources().getDisplayMetrics().widthPixels / 3, parent.getResources().getDisplayMetrics().widthPixels / 3));
+
         return new PhotoViewHolder(itemView);
     }
 

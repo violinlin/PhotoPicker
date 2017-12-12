@@ -35,7 +35,14 @@ public class PhotoItemView extends FrameLayout implements View.OnClickListener {
     public PhotoItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.pp_photopicker_item_view, this);
+//        setLayoutParams(new FrameLayout.LayoutParams(getResources().getDisplayMetrics().widthPixels / 3,
+//                getResources().getDisplayMetrics().widthPixels / 3));
         initView();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 
     private void initView() {

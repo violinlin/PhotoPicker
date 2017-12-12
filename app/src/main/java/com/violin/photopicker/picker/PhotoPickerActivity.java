@@ -130,7 +130,7 @@ public class PhotoPickerActivity extends Activity {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
-                outRect.top = Util.dip2px(getBaseContext(), 1);
+                outRect.bottom=outRect.top = Util.dip2px(getBaseContext(), 1);
                 outRect.left = outRect.right = Util.dip2px(getBaseContext(), 1);
             }
         });
